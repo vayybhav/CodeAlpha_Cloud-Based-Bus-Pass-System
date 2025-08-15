@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seat Selection – PortkeyGo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet" />
+</head>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #124766, #0E4C73, #0F669B, #0F669B, #30BADC);
+    font-family: 'Cinzel', serif;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 30px 15px;
+  }
+
+  .seat-container {
+    background: linear-gradient(135deg, rgba(12, 11, 9, 0.85), rgba(26, 23, 20, 0.85), rgba(42, 39, 36, 0.85));
+    border-radius: 16px;
+    padding: 30px 40px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 215, 0, 0.2);
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  h2 {
+    margin-bottom: 25px;
+    font-size: 2.4rem;
+    color: #d4af37;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  }
+
+  #seatGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 60px);
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .seat {
+    width: 60px;
+    height: 60px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease, color 0.3s ease;
+    user-select: none;
+  }
+
+  .seat:hover:not(.booked):not(.selected) {
+    background: #30BADC;
+    color: #fff;
+    box-shadow: 0 0 20px #30BADC;
+  }
+
+  .seat.selected {
+    background: #d4af37;
+    color: #0a0a0a;
+    box-shadow: 0 0 25px #ffd700;
+    font-weight: 900;
+  }
+
+  .seat.booked {
+    background: #555555;
+    color: #bbb;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  #selectedSeats {
+    margin: 25px 0 15px 0;
+    font-size: 1.2rem;
+    color: #f5f5dc;
+    min-height: 1.3em;
+    text-shadow: 0 0 5px black;
+    font-weight: 600;
+  }
+
+  #confirmSeatsBtn {
+    background: linear-gradient(45deg, #073d5e, #3ba4c3, #59e5ef);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+    font-family: 'Cinzel', serif;
+  }
+
+  #confirmSeatsBtn:hover {
+    background: linear-gradient(45deg, #073d5e, #1773a3);
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+</head>
+
+<body>
+  <div class="seat-container">
+    <h2>Select Your Seat(s)</h2>
+    <div id="seatGrid"></div>
+    <p id="selectedSeats">Selected Seats: None</p>
+    <button id="confirmSeatsBtn">Confirm Seat(s)</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const seatGrid = document.getElementById("seatGrid");
+      const selectedSeatsText = document.getElementById("selectedSeats");
+      const confirmBtn = document.getElementById("confirmSeatsBtn");
+
+      const totalSeats = 32;
+      const bookedSeats = []; // fetch from DB if needed
+      let selectedSeats = [];
+
+      for (let i = 1; i <= totalSeats; i++) {
+        const seat = document.createElement("div");
+        seat.classList.add("seat");
+        seat.textContent = i;
+
+        if (bookedSeats.includes(i)) {
+          seat.classList.add("booked");
+        }
+
+        seat.addEventListener("click", () => {
+          if (seat.classList.contains("booked")) return;
+
+          seat.classList.toggle("selected");
+          if (seat.classList.contains("selected")) {
+            selectedSeats.push(i);
+          } else {
+            selectedSeats = selectedSeats.filter(s => s !== i);
+          }
+          selectedSeatsText.textContent =
+            `Selected Seats: ${selectedSeats.length ? selectedSeats.join(", ") : "None"}`;
+        });
+
+        seatGrid.appendChild(seat);
+      }
+
+      confirmBtn.addEventListener("click", () => {
+        if (selectedSeats.length === 0) {
+          alert("Please select at least one seat.");
+          return;
+        }
+        sessionStorage.setItem("selectedSeats", JSON.stringify(selectedSeats));
+        window.location.href = "booking-confirmation.html";
+      });
+    });
+  </script>
+</body>
+
+</html>

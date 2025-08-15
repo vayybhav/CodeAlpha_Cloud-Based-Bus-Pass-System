@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verify OTP – PortkeyGo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Cinzel', serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #124766, #0E4C73, #0F669B, #0F669B, #30BADC);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      padding: 20px;
+    }
+
+    .otp-container {
+      background: linear-gradient(135deg, rgba(12, 11, 9, 0.85), rgba(26, 23, 20, 0.85), rgba(42, 39, 36, 0.85));
+      padding: 30px 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.08), 0 0 12px rgba(255, 215, 0, 0.15);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      color: #d4af37;
+      margin-bottom: 25px;
+      font-size: 2.2rem;
+      text-shadow: 0 0 10px black;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      background: #1a1a1a;
+      color: white;
+      transition: box-shadow 0.3s ease;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+    }
+
+    input[type="text"]:focus {
+      box-shadow: 0 0 25px #ffd700;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(45deg, #073d5e, #3ba4c3, #59e5ef);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+      font-family: 'Cinzel', serif;
+    }
+
+    button:hover {
+      background: linear-gradient(45deg, #073d5e, #1773a3);
+      transform: scale(1.05);
+    }
+
+    .status-msg {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #ff6b6b;
+      text-shadow: 0 0 6px black;
+      min-height: 1.3em;
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="otp-container">
+    <h2>Enter OTP</h2>
+    <input type="text" id="otpField" placeholder="Enter the OTP" required maxlength="6" />
+    <button id="verifyBtn">Verify</button>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+
+  <script>
+    document.getElementById("verifyBtn").addEventListener("click", async () => {
+      const otp = document.getElementById('otpField').value.trim();
+      const email = localStorage.getItem('loggedInEmail');
+      const statusMsg = document.getElementById('statusMsg');
+
+      if (!otp) {
+        statusMsg.textContent = "Please enter the OTP.";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Fetch user's name from backend
+          try {
+            const userRes = await fetch(`http://localhost:3000/get-user?email=${email}`);
+            const userData = await userRes.json();
+            if (userData.success) {
+              localStorage.setItem('userName', userData.name);
+            }
+          } catch (userErr) {
+            console.error("Failed to fetch user info:", userErr);
+          }
+
+          window.location.href = "index.html";
+        } else {
+          statusMsg.textContent = "❌ " + (data.message || "Invalid OTP.");
+        }
+      } catch (error) {
+        console.error(error);
+        statusMsg.textContent = "❌ Server error. Try again.";
+      }
+    });
+  </script>
+
+</body>
+
+</html>

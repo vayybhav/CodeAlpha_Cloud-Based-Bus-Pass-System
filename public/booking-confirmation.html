@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm Booking – PortkeyGo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0a1a2a, #14253d, #1e2f4f);
+      color: #e0e6f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      background: rgba(30, 45, 70, 0.9);
+      padding: 30px 35px;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      animation: fadeIn 0.6s ease;
+      color: #d1d9ff;
+    }
+
+    h2 {
+      text-align: center;
+      color: #a8c0ff;
+      margin-bottom: 24px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-shadow: 0 0 8px #5a74d9;
+    }
+
+    .bus-details p {
+      margin: 12px 0;
+      font-size: 17px;
+      line-height: 1.3;
+      font-weight: 600;
+      user-select: text;
+    }
+
+    .form-group {
+      margin-top: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #a3b1ff;
+      letter-spacing: 0.8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.8px solid #4a5dbf;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #223458;
+      color: #e0e6f0;
+      outline-offset: 2px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input::placeholder {
+      color: #9aa7d4;
+    }
+
+    .form-group input:focus {
+      border-color: #91a8ff;
+      background-color: #2d406c;
+    }
+
+    #confirmBookingBtn {
+      margin-top: 28px;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667dff, #aab8ff);
+      color: #0a0e1a;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 14px #7188ffcc;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+
+    #confirmBookingBtn:hover {
+      background: linear-gradient(135deg, #91a8ff, #c6d0ff);
+      box-shadow: 0 0 24px 4px #7188ffdd;
+    }
+
+    #confirmBookingBtn:active {
+      background: linear-gradient(135deg, #4d5dcf, #7f8dfd);
+      box-shadow: 0 0 14px 3px #4a5dbfcc;
+      transform: scale(0.98);
+    }
+
+    #statusMsg {
+      margin-top: 18px;
+      font-weight: 700;
+      text-align: center;
+      color: #f0a0a0;
+      min-height: 24px;
+      user-select: none;
+      letter-spacing: 0.6px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Confirm Your Booking</h2>
+    <div id="busDetails" class="bus-details"></div>
+
+    <div class="form-group">
+      <label for="passengerName">Passenger Name:</label>
+      <input type="text" id="passengerName" placeholder="Enter your full name" required />
+    </div>
+
+    <button id="confirmBookingBtn">Confirm Booking</button>
+    <p id="statusMsg"></p>
+  </div>
+
+  <script type="module" src="booking-confirmation.js"></script>
+</body>
+
+</html>

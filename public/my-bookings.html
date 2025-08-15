@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bookings – PortkeyGo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0b1f35, #18344a, #2a5177);
+      min-height: 100vh;
+      color: #f5f5dc;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px 10px;
+      color: #f5f5dc;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .profile-container {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 999;
+      font-family: 'Cinzel', serif;
+    }
+
+    #profileBtn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      user-select: none;
+      font-family: 'Arial', serif;
+    }
+
+    #profileBtn::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: gold;
+      left: 0;
+      bottom: 0;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+
+    #profileBtn:hover::after {
+      width: 100%;
+    }
+
+    #profileMenu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      min-width: 150px;
+      color: #333;
+    }
+
+    #profileMenu button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      font-weight: bold;
+      color: #333;
+    }
+
+    #profileMenu button:hover {
+      background: #f2f2f2;
+    }
+
+    .bookings-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #1e2d46;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+      animation: fadeIn 0.6s ease;
+      color: #f5f5dc;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d4af37;
+      margin-bottom: 20px;
+    }
+
+    .booking {
+      padding: 15px;
+      border-bottom: 1px solid #444;
+    }
+
+    .booking:last-child {
+      border-bottom: none;
+    }
+
+    .booking p {
+      margin: 5px 0;
+    }
+
+    .cancel-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .cancel-btn:hover {
+      background-color: #e60000;
+    }
+
+    .download-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4B0082;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .download-btn:hover {
+      background-color: #3b006e;
+    }
+
+    .action-buttons {
+      text-align: center;
+      margin-top: 10px;
+      font-family: 'Cinzel', serif;
+    }
+
+    .action-buttons button,
+    .action-buttons a>button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 6px 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      user-select: none;
+      font-family: 'Arial', serif;
+      margin: 0 10px;
+      border-radius: 6px;
+      transition: none;
+    }
+
+    .action-buttons button::after,
+    .action-buttons a>button::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: gold;
+      left: 0;
+      bottom: 0;
+      transition: width 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .action-buttons button:hover::after,
+    .action-buttons a>button:hover::after {
+      width: 100%;
+    }
+
+    .action-buttons button:hover,
+    .action-buttons a>button:hover {
+      background-color: transparent;
+    }
+
+    #clearExpiredBtn {
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Profile -->
+  <div class="profile-container">
+    <div id="profileWrapper">
+      <button id="profileBtn">Profile</button>
+      <div id="profileMenu">
+        <button id="viewProfileBtn">View Profile</button>
+        <button id="logoutBtn" style="color: red;">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <h1>My Bookings</h1>
+  </header>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <a href="index.html">
+      <button>Home</button>
+    </a>
+    <button id="clearExpiredBtn">Clear Expired Bookings</button>
+  </div>
+
+  <!-- Bookings -->
+  <div class="bookings-container">
+    <h2>Upcoming & Past Rides</h2>
+    <div id="bookingsList"></div>
+  </div>
+
+  <script type="module" src="./my-bookings.js"></script>
+
+  <!-- Dropdown Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const email = localStorage.getItem("loggedInEmail");
+      if (!email) {
+        alert("Please login to view bookings.");
+        window.location.href = "auth.html";
+        return;
+      }
+
+      const profileBtn = document.getElementById("profileBtn");
+      const profileMenu = document.getElementById("profileMenu");
+
+      profileBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        profileMenu.style.display = profileMenu.style.display === "block" ? "none" : "block";
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("#profileWrapper")) {
+          profileMenu.style.display = "none";
+        }
+      });
+
+      document.getElementById("logoutBtn")?.addEventListener("click", () => {
+        localStorage.removeItem("loggedInEmail");
+        window.location.href = "auth.html";
+      });
+
+      document.getElementById("viewProfileBtn")?.addEventListener("click", () => {
+        window.location.href = "profile.html";
+      });
+    });
+  </script>
+
+</body>
+
+</html>
