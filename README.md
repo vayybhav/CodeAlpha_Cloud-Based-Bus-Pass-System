@@ -71,13 +71,6 @@ npm install
    * Create a Firebase project.
    * Enable Firestore, Authentication, and Hosting.
    * Set up Nodemailer credentials in Firebase Functions config.
-4. Deploy:
-
-```bash
-firebase login
-firebase use --add portkeygo
-firebase deploy --only functions,hosting
-```
 
 ---
 
